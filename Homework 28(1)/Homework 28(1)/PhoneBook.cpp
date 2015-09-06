@@ -1,5 +1,6 @@
 #include<iostream>
 #include<io.h>
+#include<string.h>
 //#include<stdlib.h>
 using namespace std;
 
@@ -235,7 +236,7 @@ void Tree::SearchMenu() {
 	case '1':
 		cout << "\nПоиск абонента по имени\n";
 		char NameSearch[MAX_NAME_LEN];
-		cout << "\nВведите имя абонента\n";
+		cout << "\nВведите имя абонента:\n";
 		//cin >> NameSearch;
 		// ПОЧЕМУ-ТО НЕ ПРЕДЛАГАЕТ ВВЕСТИ ДАННЫЕ, А ПРОСТО ИДЕТ ДАЛЬШЕ
 		cin.getline(NameSearch, MAX_NAME_LEN);
@@ -267,11 +268,10 @@ PhoneBook*Tree::Search(PhoneBook*Node, char*Name) {
 	return Node;
 }
 void Tree::Save() {
-	//char source[_MAX_PATH];
 	char answerSave;
-
-	/*cout << "\nВведите путь и название файла с базой:\n";
-	cin.getline(PATH_OF_BASE, _MAX_PATH);*/
+	/*char source[_MAX_PATH];
+	cout << "\nВведите путь и название файла с базой:\n";
+	cin.getline(source, _MAX_PATH);*/
 
 	if(_access(PATH_OF_BASE, 00) == 0) {
 		cout << "\nТакой файл уже существует!"
