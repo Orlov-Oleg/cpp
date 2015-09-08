@@ -30,7 +30,7 @@ public:
 	PhoneBook*GetRoot();
 	void SearchMenu();
 	PhoneBook*Search(PhoneBook*Node, char*Name);
-	//PhoneBook*Search(PhoneBook*Node, int Number);
+	PhoneBook*Search(PhoneBook*Node, int Number);
 	void Save();
 	void FileWrite();
 	void FileWrite(PhoneBook*Node);
@@ -226,6 +226,7 @@ PhoneBook*Tree::GetRoot() {
 }
 void Tree::SearchMenu() {
 	char answerSearch;
+	PhoneBook *ResultSearch;
 	cout << "\nn или 1 - Поиск абонента по имени"
 		"\nt или 2 - Поиск абонента по номеру"
 		"\nx или 8 - Назад"
@@ -236,16 +237,20 @@ void Tree::SearchMenu() {
 	case '1':
 		cout << "\nПоиск абонента по имени\n";
 		char NameSearch[MAX_NAME_LEN];
-		cout << "\nВведите имя абонента:\n";
-		//cin >> NameSearch;
+		cout << "\nВведите имя абонента: ";
+		cin >> NameSearch;
 		// ПОЧЕМУ-ТО НЕ ПРЕДЛАГАЕТ ВВЕСТИ ДАННЫЕ, А ПРОСТО ИДЕТ ДАЛЬШЕ
-		cin.getline(NameSearch, MAX_NAME_LEN);
-		Search(GetRoot(), NameSearch);
+		//cin.getline(NameSearch, MAX_NAME_LEN);
+		ResultSearch = Search(GetRoot(), NameSearch);
+		//Print(ResultSearch);
 		break;
 	case 't':
 	case '2':
 		cout << "\nПоиск абонента по телефону\n";
-
+		int NumberSearch;
+		cout << "\nВведите номер абонента: ";
+		cin >> NumberSearch;
+		ResultSearch = Search(GetRoot(), NumberSearch);
 		break;
 	case 'x':
 	case '8':
@@ -259,6 +264,17 @@ void Tree::SearchMenu() {
 PhoneBook*Tree::Search(PhoneBook*Node, char*Name) {
 	while(Node != 0 && strcmp(Name, Node->Name) != 0) {
 		if(strcmp(Name, Node->Name) < 0) {
+			Node = Node->left;
+		}
+		else {
+			Node = Node->right;
+		}
+	}
+	return Node;
+}
+PhoneBook*Tree::Search(PhoneBook*Node, int Number) {
+	while(Node != 0 && Number == Node->Number) {
+		if(Number < Node->Number) {
 			Node = Node->left;
 		}
 		else {
