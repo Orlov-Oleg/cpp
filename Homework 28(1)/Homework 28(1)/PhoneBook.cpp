@@ -22,6 +22,7 @@ public:
 	void AddMenu();
 	void Add(PhoneBook*pb);
 	void PrintMenu();
+	void PrintAll(PhoneBook*Node);
 	void Print(PhoneBook*Node);
 	void DelMenu();
 	void Del(PhoneBook*pb = 0);
@@ -36,6 +37,10 @@ public:
 	void FileWrite(PhoneBook*Node);
 	void FileAdd();
 	void Read();
+	void ModifyMenu();
+	void ModifyName();
+	void ModifyNumber();
+	void ChangeName(PhoneBook*Node,char*Name);
 };
 
 Tree t;
@@ -95,7 +100,12 @@ void Tree::PrintMenu() {
 	case 'a':
 	case '1':
 		cout << "\nВывод сведений обо всех абонентах\n";
-		t.Print(GetRoot());
+		if(GetRoot()) {
+			t.PrintAll(GetRoot());
+		}
+		else {
+			cout << "\nБаза пока пуста\n";
+		}
 		break;
 	case 'n':
 	case '2':
@@ -115,15 +125,15 @@ void Tree::PrintMenu() {
 		break;
 	}
 }
-void Tree::Print(PhoneBook*Node) {
+void Tree::PrintAll(PhoneBook*Node) {
 	if(Node != 0) {
-		Print(Node->left);
-		cout << Node->Name
-			<< " - "
-			<< Node->Number
-			<< endl;
-		Print(Node->right);
+		PrintAll(Node->left);
+		cout << Node->Name << " - " << Node->Number << endl;
+		PrintAll(Node->right);
 	}
+}
+void Tree::Print(PhoneBook*Node) {
+	cout << Node->Name << " - " << Node->Number << endl;
 }
 void Tree::DelMenu() {
 	char answerDel;
@@ -228,9 +238,9 @@ void Tree::SearchMenu() {
 	char answerSearch;
 	PhoneBook *ResultSearch;
 	cout << "\nn или 1 - Поиск абонента по имени"
-		"\nt или 2 - Поиск абонента по номеру"
+		"\nt или 2 - НЕ РАБОТАЕТ!!! Поиск абонента по номеру"
 		"\nx или 8 - Назад"
-		"\nВаш выбор:";
+		"\nВаш выбор: ";
 	cin >> answerSearch;
 	switch(answerSearch) {
 	case 'n':
@@ -242,7 +252,12 @@ void Tree::SearchMenu() {
 		// ПОЧЕМУ-ТО НЕ ПРЕДЛАГАЕТ ВВЕСТИ ДАННЫЕ, А ПРОСТО ИДЕТ ДАЛЬШЕ
 		//cin.getline(NameSearch, MAX_NAME_LEN);
 		ResultSearch = Search(GetRoot(), NameSearch);
-		//Print(ResultSearch);
+		if(ResultSearch) {
+			Print(ResultSearch);
+		}
+		else {
+			cout << "\nАбонент с таким имненм не найден\n";
+		}
 		break;
 	case 't':
 	case '2':
@@ -251,6 +266,12 @@ void Tree::SearchMenu() {
 		cout << "\nВведите номер абонента: ";
 		cin >> NumberSearch;
 		ResultSearch = Search(GetRoot(), NumberSearch);
+		if(ResultSearch) {
+			Print(ResultSearch);
+		}
+		else {
+			cout << "\nАбонент с таким номерм не найден\n";
+		}
 		break;
 	case 'x':
 	case '8':
@@ -273,13 +294,13 @@ PhoneBook*Tree::Search(PhoneBook*Node, char*Name) {
 	return Node;
 }
 PhoneBook*Tree::Search(PhoneBook*Node, int Number) {
-	while(Node != 0 && Number == Node->Number) {
-		if(Number < Node->Number) {
-			Node = Node->left;
+	// НЕ РАБОТАЕТ!!!
+	if(Node != 0) {
+		if(Node->Number == Number) {
+			return Node;
 		}
-		else {
-			Node = Node->right;
-		}
+		Search(Node->left, Number);
+		Search(Node->right, Number);
 	}
 	return Node;
 }
@@ -392,6 +413,55 @@ void Tree::Read() {
 	}
 	fclose(f);
 }
+void Tree::ModifyMenu() {
+	char AnswerModify;
+	cout << "n или 1 - Измененить имя абонента"
+		"\nt или 2 - Измененить номер абонента"
+		"\nx или 8 - Назад"
+		"\nВаш выбор: ";
+	cin >> AnswerModify;
+	switch(AnswerModify) {
+	case 'n':
+	case '1':
+		cout << "\nИзменение имени\n";
+		t.ModifyName();
+		break;
+	case 't':
+	case '2':
+		cout << "\nИзменение номера\n";
+		t.ModifyNumber();
+		break;
+	case 'x':
+	case '8':
+	default:
+		break;
+	}
+}
+void Tree::ModifyName() {
+	PhoneBook*Node;
+	char NameModify[MAX_NAME_LEN];
+	cout << "\nВведите имя абонента: ";
+	cin >> NameModify;
+	Node = t.Search(GetRoot(), NameModify);
+	if(Node) {
+		char NewName[MAX_NAME_LEN];
+		cout << "\nВведите новое имя абонента: ";
+		cin >> NewName;
+		//Node->Name = NewName;
+	}
+}
+void Tree::ChangeName(PhoneBook*Node, char*Name) {
+	PhoneBook*pb = root;
+	while(true) {
+
+	}
+}
+void Tree::ModifyNumber() {
+	char NumberModify[MAX_NAME_LEN];
+	cout << "\nВведите номер абонента: ";
+	cin >> NumberModify;
+
+}
 int main() {
 	setlocale(0, "rus");
 
@@ -400,7 +470,7 @@ int main() {
 		cout << "\na или 1 - Добавление нового абонента"
 			"\nd или 2 - Удаление абонентов"
 			"\nm или 3 - НЕ РАБОТАЕТ!!! Изменение данных абонента"
-			"\nf или 4 - НЕ РАБОТАЕТ!!! Поиск абонента по номеру или имени"
+			"\nf или 4 - ЧАСТИЧНО РАБОТАЕТ!!! Поиск абонента по номеру или имени"
 			"\np или 5 - Вывести сведения о всех абонентах"
 			"\nw или 6 - Записать все данные в файл"
 			"\nr или 7 - НЕ РАБОТАЕТ!!! Прочитать все данные из файла"
@@ -421,7 +491,7 @@ int main() {
 		case 'm':
 		case '3':
 			cout << "\nИзменение данных абонента\n";
-
+			t.ModifyMenu();
 			break;
 		case 'f':
 		case '4':
